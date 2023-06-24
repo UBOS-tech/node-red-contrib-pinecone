@@ -1,6 +1,6 @@
 ## node-red-contrib-pinecone
 
-
+Pinecone makes it easy to provide long-term memory for high-performance AI applications
 
 <img width="100%"  alt="Ubos - End-to-End Software Development Platform" src="https://ubos.tech/wp-content/uploads/2023/03/cropped-Group-21015-1.png">
 
@@ -77,3 +77,105 @@ Example:
     - `replicas`: [Type: string] The desired number of replicas for the index
     - `pod_type`: [Type: string] The new pod type for the index. One of **s1**, **p1**, or **p2** appended with **.** and one of **x1**, **x2**, **x4**, or **x8**.
 
+## Properties Vector operations
+
+1. When `msg.actionType` is set to `fetch`:
+    - **[Required]** `msg.name`: The name of the index
+
+    - **[Required]** `msg.vectors`: The vector IDs to fetch. Does not accept values containing spaces. For example:
+   ```js
+    msg.payload = {
+        name: "pinecone-index",
+        vectors: ["vec1", "vec2"]
+    };
+   ```
+
+2. When `msg.actionType` is set to `query`:
+    - **[Required]** `name`: [Type: string] The name of the index
+
+    - **[Required]** `topK`: [Type: int64] The number of results to return for each query
+    - `filter`: [Type: object] The filter to apply. You can use vector metadata to limit your search. See [docs](https://www.pinecone.io/docs/metadata-filtering)
+    - `includeValues`: [Type: boolean] Indicates whether vector values are included in the response
+    - `includeMetadata`: [Type: boolean] Indicates whether metadata is included in the response as well as the ids
+    - `vector`: [Type: array of floats] The query vector. This should be the same length as the dimension of the index being queried. Each query() request can contain only one of the parameters id or vector.
+    - `sparseVector`: [Type: object] Vector sparse data. Represented as a list of indices and a list of corresponded values, which must be the same length
+    - `id`: [Type: string] The unique ID of the vector to be used as a query vector. Each query() request can contain only one of the parameters queries, vector, or id
+   
+   Example:
+   ```js
+    msg.payload = {
+        name: "pinecone-index",
+        topK: 10,
+        vector: [0.1,0.2,0.3],
+        namespace: 'example-namespace'
+    };
+   ```
+
+3. When `msg.actionType` is set to `update`:
+    - **[Required]** `name`: [Type: string] The name of the index
+
+    - **[Required]** `id`: [Type: string] Vector's unique id
+    - `values`: [Type: array of floats] Vector data
+    - `sparseValues`: [Type: object] Vector sparse data. Represented as a list of indices and a list of corresponded values, which must be the same length
+    - `setMetadata`: [Type: object] Metadata to set for the vector
+    - `namespace`: [Type: string] The namespace containing the vector to update
+   
+   Example:
+   ```js
+    msg.payload = {
+        name: "pinecone-index",
+        id:'vec1',
+        values: [0.1,0.2,0.3,0.4],
+        set_metadata: {'genre': 'drama'},
+        namespace: 'example-namespace'
+    };
+   ```
+
+4. When `msg.actionType` is set to `upsert`:
+    - **[Required]** `name`: [Type: string] The name of the index
+
+    - **[Required]** `vectors`: [Type: array of objects] An array containing the vectors to upsert. Recommended batch limit is 100 vectors
+    - `namespace`: [Type: string] This is the namespace name where you upsert vectors
+   
+   Example:
+   ```js
+    msg.payload = {
+        name: "pinecone-index",
+        vectors: [
+            {
+                id: 'vec2',
+                values: [0.2,0.3,0.4,0.5],
+                metadata: {'genre': 'action'}
+            }
+        ]
+    };
+   ```
+
+5. When `msg.delete` is set to `upsert`:
+    - **[Required]** `name`: [Type: string] The name of the index
+
+    - **[Required]** `ids`: [Type: array of strings] Vectors to delete
+    - `deleteAll`: [Type: boolean] This indicates that all vectors in the index namespace should be deleted
+    - `namespace`: [Type: string] The namespace to delete vectors from, if applicable
+    - `filter`: [Type: boolean] If specified, the metadata filter here will be used to select the vectors to delete. This is mutually exclusive with specifying IDs to delete in the ids param or using delete_all=True. See [doc](https://www.pinecone.io/docs/metadata-filtering)
+   
+   Example:
+   ```js
+    msg.payload = {
+        name: "pinecone-index",
+        ids: ["vec1", "vec2"]
+    };
+   ```
+
+6. When `msg.delete` is set to `describeIndexStats`:
+    - **[Required]** `name`: [Type: string] The name of the index
+
+    - `filter`: [Type: boolean] If this parameter is present, the operation only returns statistics for vectors that satisfy the filter. See [doc](https://www.pinecone.io/docs/metadata-filtering)
+
+### Bugs reports and feature requests
+
+Please report any issues or feature requests at <a href="https://github.com/UBOS-tech/node-red-contrib-pinecone/issues">GitHub</a>.
+
+## License
+
+[MIT License](https://github.com/UBOS-tech/node-red-contrib-pinecone/blob/main/LICENSE)
