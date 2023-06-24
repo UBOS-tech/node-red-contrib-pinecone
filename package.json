@@ -11,7 +11,17 @@
     "url": "git+https://github.com/UBOS-tech/node-red-contrib-pinecone.git"
   },
   "keywords": [
-    "node-red"
+    "node-red",
+    "pinecone",
+    "nodejs",
+    "javascript",
+    "api",
+    "flow",
+    "npm",
+    "machine-learning",
+    "node",
+    "example",
+    "ai"
   ],
   "author": "vovajr11",
   "license": "MIT",
