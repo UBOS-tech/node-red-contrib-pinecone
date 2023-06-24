@@ -1,0 +1,32 @@
+{
+  "name": "node-red-contrib-pinecone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UBOS-tech/node-red-contrib-pinecone.git"
+  },
+  "keywords": [
+    "node-red"
+  ],
+  "author": "vovajr11",
+  "license": "MIT",
+  "node-red": {
+    "nodes": {
+      "pinecone-index-ubos": "pinecone-index-subflow.js",
+      "pinecone-vector-ubos": "pinecone-vector-subflow.js"
+    },
+    "dependencies": []
+  },
+  "dependencies": {
+    "crypto-js": "^4.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/UBOS-tech/node-red-contrib-pinecone/issues"
+  },
+  "homepage": "https://github.com/UBOS-tech/node-red-contrib-pinecone#readme"
+}

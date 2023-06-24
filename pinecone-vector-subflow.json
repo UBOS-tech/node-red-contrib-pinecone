@@ -1,0 +1,295 @@
+{
+	"id": "70c990f5226211c0",
+	"type": "subflow",
+	"name": "Pinecone Vector",
+	"info": "## Properties\n\n1. When `msg.actionType` is set to `fetch`:\n    - **[Required]** `msg.name`: The name of the index\n\n    - **[Required]** `msg.vectors`: The vector IDs to fetch. Does not accept values containing spaces. For example:\n   ```js\n    msg.payload = {\n        name: \"pinecone-index\",\n        vectors: [\"vec1\", \"vec2\"]\n    };\n   ```\n\n2. When `msg.actionType` is set to `query`:\n    - **[Required]** `name`: [Type: string] The name of the index\n\n    - **[Required]** `topK`: [Type: int64] The number of results to return for each query\n    - `filter`: [Type: object] The filter to apply. You can use vector metadata to limit your search. See [docs](https://www.pinecone.io/docs/metadata-filtering)\n    - `includeValues`: [Type: boolean] Indicates whether vector values are included in the response\n    - `includeMetadata`: [Type: boolean] Indicates whether metadata is included in the response as well as the ids\n    - `vector`: [Type: array of floats] The query vector. This should be the same length as the dimension of the index being queried. Each query() request can contain only one of the parameters id or vector.\n    - `sparseVector`: [Type: object] Vector sparse data. Represented as a list of indices and a list of corresponded values, which must be the same length\n    - `id`: [Type: string] The unique ID of the vector to be used as a query vector. Each query() request can contain only one of the parameters queries, vector, or id\n   \n   Example:\n   ```js\n    msg.payload = {\n        name: \"pinecone-index\",\n        topK: 10,\n        vector: [0.1,0.2,0.3],\n        namespace: 'example-namespace'\n    };\n   ```\n\n3. When `msg.actionType` is set to `update`:\n    - **[Required]** `name`: [Type: string] The name of the index\n\n    - **[Required]** `id`: [Type: string] Vector's unique id\n    - `values`: [Type: array of floats] Vector data\n    - `sparseValues`: [Type: object] Vector sparse data. Represented as a list of indices and a list of corresponded values, which must be the same length\n    - `setMetadata`: [Type: object] Metadata to set for the vector\n    - `namespace`: [Type: string] The namespace containing the vector to update\n   \n   Example:\n   ```js\n    msg.payload = {\n        name: \"pinecone-index\",\n        id:'vec1',\n        values: [0.1,0.2,0.3,0.4],\n        set_metadata={'genre': 'drama'},\n        namespace: 'example-namespace'\n    };\n   ```\n\n4. When `msg.actionType` is set to `upsert`:\n    - **[Required]** `name`: [Type: string] The name of the index\n\n    - **[Required]** `vectors`: [Type: array of objects] An array containing the vectors to upsert. Recommended batch limit is 100 vectors\n    - `namespace`: [Type: string] This is the namespace name where you upsert vectors\n   \n   Example:\n   ```js\n    msg.payload = {\n        name: \"pinecone-index\",\n        vectors: [\n            {\n                id: 'vec2',\n                values: [0.2,0.3,0.4,0.5],\n                metadata: {'genre': 'action'}\n            }\n        ]\n    };\n   ```\n\n5. When `msg.delete` is set to `upsert`:\n    - **[Required]** `name`: [Type: string] The name of the index\n\n    - **[Required]** `ids`: [Type: array of strings] Vectors to delete\n    - `deleteAll`: [Type: boolean] This indicates that all vectors in the index namespace should be deleted\n    - `namespace`: [Type: string] The namespace to delete vectors from, if applicable\n    - `filter`: [Type: boolean] If specified, the metadata filter here will be used to select the vectors to delete. This is mutually exclusive with specifying IDs to delete in the ids param or using delete_all=True. See [doc](https://www.pinecone.io/docs/metadata-filtering)\n   \n   Example:\n   ```js\n    msg.payload = {\n        name: \"pinecone-index\",\n        ids: [\"vec1\", \"vec2\"]\n    };\n   ```\n\n6. When `msg.delete` is set to `describeIndexStats`:\n    - **[Required]** `name`: [Type: string] The name of the index\n\n    - `filter`: [Type: boolean] If this parameter is present, the operation only returns statistics for vectors that satisfy the filter. See [doc](https://www.pinecone.io/docs/metadata-filtering)",
+	"category": "",
+	"in": [
+		{
+			"x": 100,
+			"y": 160,
+			"wires": [
+				{
+					"id": "a658e8eeeca4a302"
+				}
+			]
+		}
+	],
+	"out": [
+		{
+			"x": 700,
+			"y": 140,
+			"wires": [
+				{
+					"id": "a658e8eeeca4a302",
+					"port": 0
+				},
+				{
+					"id": "98bd7701e736895c",
+					"port": 0
+				}
+			]
+		}
+	],
+	"env": [
+		{
+			"name": "actionType",
+			"type": "str",
+			"value": "upsert",
+			"ui": {
+				"icon": "font-awesome/fa-sign-out",
+				"label": {
+					"en-US": "Type"
+				},
+				"type": "select",
+				"opts": {
+					"opts": [
+						{
+							"l": {
+								"en-US": "upsert"
+							},
+							"v": "upsert"
+						},
+						{
+							"l": {
+								"en-US": "update"
+							},
+							"v": "update"
+						},
+						{
+							"l": {
+								"en-US": "fetch"
+							},
+							"v": "fetch"
+						},
+						{
+							"l": {
+								"en-US": "delete"
+							},
+							"v": "delete"
+						},
+						{
+							"l": {
+								"en-US": "query"
+							},
+							"v": "query"
+						},
+						{
+							"l": {
+								"en-US": "describeIndexStats"
+							},
+							"v": "describeIndexStats"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "apiKey",
+			"type": "cred",
+			"ui": {
+				"icon": "font-awesome/fa-sign-out",
+				"label": {
+					"en-US": "API Key"
+				},
+				"type": "input",
+				"opts": {
+					"types": [
+						"cred"
+					]
+				}
+			}
+		},
+		{
+			"name": "environment",
+			"type": "cred",
+			"ui": {
+				"icon": "font-awesome/fa-sign-out",
+				"label": {
+					"en-US": "Environment"
+				},
+				"type": "input",
+				"opts": {
+					"types": [
+						"cred"
+					]
+				}
+			}
+		},
+		{
+			"name": "projectId",
+			"type": "cred",
+			"ui": {
+				"icon": "font-awesome/fa-sign-out",
+				"label": {
+					"en-US": "Project Id"
+				},
+				"type": "input",
+				"opts": {
+					"types": [
+						"cred"
+					]
+				}
+			}
+		}
+	],
+	"meta": {
+		"module": "node-red-contrib-pinecone-ubos",
+		"type": "pinecone-vector-ubos",
+		"version": "1.0.0",
+		"author": "vovajr11",
+		"desc": "Descr",
+		"keywords": "node-red",
+		"license": "MIT"
+	},
+	"credentials": {
+		"apiKey": "",
+		"environment": "",
+		"projectId": ""
+	},
+	"color": "#3FADB5",
+	"icon": "node-red/leveldb.png",
+	"status": {
+		"x": 220,
+		"y": 260,
+		"wires": [
+			{
+				"id": "d6b1390ae936e28f",
+				"port": 0
+			}
+		]
+	},
+	"flow": [
+		{
+			"id": "d6b1390ae936e28f",
+			"type": "status",
+			"z": "70c990f5226211c0",
+			"name": "",
+			"scope": [
+				"a658e8eeeca4a302",
+				"98bd7701e736895c"
+			],
+			"x": 100,
+			"y": 260,
+			"wires": [
+				[]
+			]
+		},
+		{
+			"id": "a658e8eeeca4a302",
+			"type": "function",
+			"z": "70c990f5226211c0",
+			"name": "init",
+			"func": "/*\n  Type: Main\n  @param \"PINECONE_API_KEY\" {string} Required\n  @param \"PINECONE_ENVIRONMENT\" {string} Required\n  @param \"PINECONE_TABLE_NAME\" {string} Optional\n*/\n\n/*\n  actionType: create_index\n  @param \"vectors\" {array of objects} Required\n*/\n\n/*\n  actionType: upsert\n  @param \"indexName\" {string} Required\n*/\n\n/*\n  actionType: describe_index\n  @param \"indexName\" {string} Required\n*/\n\nconst { PineconeClient } = pineconeDB;\nconst client = new PineconeClient();\n\nawait client.init({\n  apiKey: env.get(\"apiKey\"),\n  environment: env.get(\"environment\"),\n});\n\nconst actionType = msg.actionType || env.get(\"actionType\");\nconst projectId = msg.projectId || env.get(\"projectId\");\n\nmsg.actionType = actionType;\n\nconst { \n  name, \n  vectors,\n  namespace,\n  topK,\n  filter,\n  includeValues,\n  includeMetadata,\n  vector,\n  sparseVector,\n  id,\n  values,\n  sparseValues,\n  setMetadata,\n  ids,\n  deleteAll\n} = msg.payload;\n\nmsg.headers = {\n  'Api-Key': `${env.get(\"apiKey\")}`,\n  'content-type': 'application/json',\n};\n\nif (actionType === \"upsert\") {\n  reqStatus();\n\n  msg.method = \"POST\";\n  msg.url = `https://${name}-${projectId}.svc.${env.get(\"environment\")}.pinecone.io/vectors/upsert`\n\n  msg.payload = { vectors, namespace };\n\n  return [null, msg];\n}\n\nif (actionType === \"fetch\") {\n  reqStatus();\n\n  msg.method = \"GET\";\n  msg.url = `https://${name}-${projectId}.svc.${env.get(\"environment\")}.pinecone.io/vectors/fetch?ids=${vectors.reverse().join(\"&ids=\")}`;\n\n  return [null, msg];\n}\n\nif (actionType === \"query\") {\n  reqStatus();\n\n  msg.method = \"POST\";\n  msg.url = `https://${name}-${projectId}.svc.${env.get(\"environment\")}.pinecone.io/query`;\n\n  msg.payload = {\n    namespace,\n    topK,\n    filter,\n    includeValues,\n    includeMetadata,\n    vector,\n    sparseVector,\n    id\n  };\n\n  return [null, msg];\n}\n\nif (actionType === \"update\") {\n  reqStatus();\n\n  msg.method = \"POST\";\n  msg.url = `https://${name}-${projectId}.svc.${env.get(\"environment\")}.pinecone.io/vectors/update`;\n  msg.payload = {\n    id,\n    values,\n    sparseValues,\n    setMetadata,\n    namespace\n  }\n\n  return [null, msg];\n}\n\nif (actionType === \"describeIndexStats\") {\n  reqStatus();\n\n  msg.method = \"POST\";\n  msg.url = `https://${name}-${projectId}.svc.${env.get(\"environment\")}.pinecone.io/describe_index_stats`;\n  msg.payload = { filter };\n\n  return [null, msg];\n}\n\nif (actionType === \"delete\") {\n  reqStatus();\n\n  msg.method = \"POST\";\n  msg.url = `https://${name}-${projectId}.svc.${env.get(\"environment\")}.pinecone.io/vectors/delete`;\n  msg.payload = { \n    ids,\n    deleteAll,\n    namespace,\n    filter\n  };\n\n  return [null, msg];\n}\n\nnode.status({ fill: \"red\", shape: \"dot\", text: \"invalid type\" });\nmsg.payload = \"Invalid actionType\";\n\nreturn [msg, null];\n\nfunction reqStatus() {\n  return node.status({ fill: \"blue\", shape: \"dot\", text: \"requesting\" });\n}\n",
+			"outputs": 2,
+			"noerr": 0,
+			"initialize": "// Code added here will be run once\n// whenever the node is started.\nconst { PineconeClient } = pineconeDB;\nconst pinecone = new PineconeClient();\n\ntry {\n    await pinecone.init({\n        apiKey: env.get(\"apiKey\"),\n        environment: env.get(\"environment\"),\n    });\n\n    node.status({ fill: \"green\", shape: \"dot\", text: \"Connected\" });\n} catch (error) {\n    node.status({ fill: \"red\", shape: \"dot\", text: \"Unauthorized\" });\n    node.send({\n        type: \"error\",\n        error\n    });\n};\n\n// if (pinecone) {\n//     node.status({ fill: \"green\", shape: \"dot\", text: \"Connected\" });\n// }",
+			"finalize": "",
+			"libs": [
+				{
+					"var": "pineconeDB",
+					"module": "@pinecone-database/pinecone"
+				}
+			],
+			"x": 210,
+			"y": 160,
+			"wires": [
+				[],
+				[
+					"39d6bad8d72f6643"
+				]
+			]
+		},
+		{
+			"id": "98bd7701e736895c",
+			"type": "function",
+			"z": "70c990f5226211c0",
+			"name": "set status",
+			"func": "node.status({ fill: \"green\", shape: \"dot\", text: \"finished\" });\n\nreturn msg;",
+			"outputs": 1,
+			"noerr": 0,
+			"initialize": "",
+			"finalize": "",
+			"libs": [],
+			"x": 580,
+			"y": 200,
+			"wires": [
+				[]
+			]
+		},
+		{
+			"id": "42344cbe875d0210",
+			"type": "http request",
+			"z": "70c990f5226211c0",
+			"name": "",
+			"method": "use",
+			"ret": "obj",
+			"paytoqs": "ignore",
+			"url": "",
+			"tls": "",
+			"persist": false,
+			"proxy": "",
+			"insecureHTTPParser": false,
+			"authType": "",
+			"senderr": false,
+			"headers": [],
+			"x": 415,
+			"y": 180,
+			"wires": [
+				[
+					"98bd7701e736895c"
+				]
+			],
+			"l": false
+		},
+		{
+			"id": "39d6bad8d72f6643",
+			"type": "function",
+			"z": "70c990f5226211c0",
+			"name": "function 18",
+			"func": "const returnStringFormat = [\n    \"configure_index\",\n    \"create_index\",\n    \"delete_index\",\n    \"create_collection\",\n    \"delete_collection\",\n];\n\nconst findType = returnStringFormat.find(el => el === msg.actionType);\n\nif (findType) {\n    return [null, msg]\n} else {\n    return [msg, null]\n}\n",
+			"outputs": 2,
+			"noerr": 0,
+			"initialize": "",
+			"finalize": "",
+			"libs": [],
+			"x": 325,
+			"y": 200,
+			"wires": [
+				[
+					"42344cbe875d0210"
+				],
+				[
+					"02bd1d6d76be878e"
+				]
+			],
+			"icon": "node-red/cog.svg",
+			"l": false
+		},
+		{
+			"id": "02bd1d6d76be878e",
+			"type": "http request",
+			"z": "70c990f5226211c0",
+			"name": "",
+			"method": "use",
+			"ret": "txt",
+			"paytoqs": "ignore",
+			"url": "",
+			"tls": "",
+			"persist": false,
+			"proxy": "",
+			"insecureHTTPParser": false,
+			"authType": "",
+			"senderr": false,
+			"headers": [],
+			"x": 415,
+			"y": 220,
+			"wires": [
+				[
+					"98bd7701e736895c"
+				]
+			],
+			"l": false
+		}
+	]
+}
