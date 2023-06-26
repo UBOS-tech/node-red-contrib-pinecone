@@ -16,6 +16,13 @@ Pinecone makes it easy to provide long-term memory for high-performance AI appli
   <a href="https://github.com/UBOS-tech">GitHub</a>
 </h3>
 
+<div align="center">
+ 
+[![flow](https://img.shields.io/badge/platform-Node--RED-red)](https://flows.nodered.org/node/node-red-contrib-pinecone)
+[![npm](https://img.shields.io/npm/v/node-red-contrib-pinecone)](https://www.npmjs.com/package/node-red-contrib-pinecone)
+ 
+</div>
+
 ### Quick Start
 
 Install with the built in <b>Node-RED Palette manager</b> or using npm:
