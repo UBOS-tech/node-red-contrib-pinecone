@@ -32,6 +32,12 @@ npm install node-red-contrib-pinecone
 
 ## Properties Index Operations
 
+```js
+msg.PINECONE_API_KEY = "Your API key";
+msg.PINECONE_ENVIRONMENT = "Your environment";
+msg.PINECONE_BASE_URL = "https://controller.[Your environment].pinecone.io";
+```
+
 1. When `msg.actionType` is set to `list_collections`: This operation returns a list of your Pinecone collections
 
 2. When `msg.actionType` is set to `create_collection`:
@@ -85,6 +91,12 @@ Example:
     - `pod_type`: [Type: string] The new pod type for the index. One of **s1**, **p1**, or **p2** appended with **.** and one of **x1**, **x2**, **x4**, or **x8**.
 
 ## Properties Vector operations
+
+```js
+msg.PINECONE_API_KEY = "Your API key";
+msg.PINECONE_ENVIRONMENT = "Your environment";
+msg.PINECONE_BASE_URL = "https://index_name-project_id.svc.environment.pinecone.io";
+```
 
 1. When `msg.actionType` is set to `fetch`:
     - **[Required]** `msg.name`: The name of the index
