@@ -145,7 +145,7 @@ msg.PINECONE_BASE_URL = "https://index_name-project_id.svc.environment.pinecone.
         name: "pinecone-index",
         id:'vec1',
         values: [0.1,0.2,0.3,0.4],
-        set_metadata: {'genre': 'drama'},
+        setMetadata: {'genre': 'drama'},
         namespace: 'example-namespace'
     };
    ```
